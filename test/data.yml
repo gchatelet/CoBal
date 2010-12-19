@@ -1,0 +1,22 @@
+# you describe your data using the YAML notation here
+# and then load them using Fixtures.load("data.yml")
+
+Community(rd):
+    name: R&D
+
+Item(coca):
+    name: coca
+    community: rd
+
+User(bob):
+    email: bob@gmail.com
+    password: dummy
+    name: bob
+    isAdmin: false;
+    
+Donation(donation1):
+    date: 2007-08-06
+    price: 6.5
+    unitCount: 6
+    item: coca
+    fromUser: bob

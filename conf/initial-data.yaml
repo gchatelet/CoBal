@@ -1,0 +1,6 @@
+User(gch):
+    email: chatelet.guillaume@gmail.com
+    password: dummy
+    fullname: Guillaume Chatelet
+    isAdmin: true
+    lang: fr
