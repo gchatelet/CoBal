@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import play.data.validation.Email;
@@ -22,8 +23,10 @@ public class User extends Model {
     public String name;
     public boolean isAdmin;
     public String lang;
-    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "donator", cascade = CascadeType.ALL)
     public List<Donation> donations;
+    @ManyToMany
+    public List<Community> communities;
 
     public User(String email, String password, String name, String lang) {
         this.email = email;
@@ -31,12 +34,39 @@ public class User extends Model {
         this.name = name;
         this.lang = lang;
         this.donations = new ArrayList<Donation>();
+        this.communities = new ArrayList<Community>();
+        create();
     }
 
-    public Donation donate(Item item, BigDecimal price, int count) {
-        final Donation donation = new Donation(this, item, price, count);
-        donation.create();
+    public void join(Community community) {
+        if (communities.contains(community))
+            return;
+        if (community == null)
+            throw new IllegalArgumentException("Cannot join a null community");
+        communities.add(community);
+        save();
+        community.refresh();
+    }
+
+    public Community createAndJoin(String communityName, String description) {
+        if (findCommunity(communityName) != null)
+            throw new IllegalStateException("You are already in a community called " + communityName);
+        final Community community = new Community(communityName, description);
+        join(community);
+        return community;
+    }
+
+    public Community findCommunity(String named) {
+        for (Community community : communities)
+            if (community.name.equals(named))
+                return community;
+        return null;
+    }
+
+    public Donation donate(String name, Community community, Currency currency, BigDecimal cost, int units) {
+        final Donation donation = new Donation(name, community, this, currency, cost, units);
         donations.add(donation);
+        save();
         return donation;
     }
 

@@ -9,60 +9,55 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.codehaus.groovy.runtime.dgmimpl.arrays.IntegerArrayGetAtMetaMethod;
-
 import play.data.validation.Required;
 
 @Entity
 public class Donation extends Transaction {
-    @ManyToOne
     @Required
-    public Item item;
-    @ManyToOne
+    public String name;
     @Required
-    public User fromUser;
-    @OneToMany(mappedBy = "againstDonation", cascade = CascadeType.ALL)
-    public List<Borrowing> borrowings;
+    public Community community;
+    @Required
+    @ManyToOne
+    public User donator;
+    @Required
+    public Currency currency;
+    @OneToMany(mappedBy = "purpose", cascade = CascadeType.ALL)
+    public List<Debt> borrowings;
 
-    public Donation(User fromUser, Item item, BigDecimal price, int unitCount) {
-        super(price, unitCount);
-        if (fromUser == null || item == null)
-            throw new IllegalArgumentException("User and item must not be null");
-        this.item = item;
-        this.fromUser = fromUser;
-        this.borrowings = new ArrayList<Borrowing>();
+    public Donation(String name, Community community, User donator, Currency currency, BigDecimal cost, int units) {
+        super(cost, units);
+        if (donator == null || community == null || name == null || currency == null)
+            throw new IllegalArgumentException("no null references allowed");
+        if (name.isEmpty())
+            throw new IllegalArgumentException("donation name cannot be empty");
+        this.name = name;
+        this.community = community;
+        this.donator = donator;
+        this.currency = currency;
+        this.borrowings = new ArrayList<Debt>();
+        create();
     }
 
     public boolean isCountable() {
-        return unitCount > 0;
+        return units > 0;
     }
 
     public boolean isFree() {
-        return BigDecimal.ZERO.equals(price);
+        return BigDecimal.ZERO.equals(cost);
     }
 
-    public int getAvailablePieces() {
-        int borrowedPieces = 0;
-        for (Borrowing borrowing : borrowings)
-            borrowedPieces += borrowing.unitCount;
-        return unitCount - borrowedPieces;
+    public int getUnitLeft() {
+        int unitLeft = units;
+        for (Debt borrowing : borrowings)
+            unitLeft -= borrowing.units;
+        return unitLeft;
     }
 
-    public Borrowing borrow(User borrower, int count) {
-        final boolean countable = isCountable();
-        if (countable) {
-            if (count == 0)
-                throw new IllegalArgumentException("Cannot borrow 0 piece on a countable donation");
-            if (getAvailablePieces() < count)
-                throw new IllegalStateException("Cannot borrow " + count + " pieces : not enough pieces left");
-        } else {
-            if (count != 0)
-                throw new IllegalArgumentException("Cannot borrow " + count + " pieces : " + item + " is not countable");
-        }
-        final Borrowing borrowing = new Borrowing(borrower, this, BigDecimal.ZERO, count);
-        borrowing.create();
-        borrowings.add(borrowing);
-        save();
-        return borrowing;
+    public BigDecimal getMoneyLeft() {
+        final BigDecimal money = cost;
+        for (Debt borrowing : borrowings)
+            money.min(borrowing.cost);
+        return money;
     }
 }

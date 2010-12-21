@@ -5,34 +5,25 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
 public class Community extends Model {
-	@Required
-	public String name;
+    @Required
+    public String name;
+    public String description;
+    @ManyToMany(mappedBy = "communities", cascade = CascadeType.ALL)
+    public List<User> users;
 
-	public String description;
-
-	@OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
-	public List<Item> items;
-
-	public Community(String name, String description) {
-		this.items = new ArrayList<Item>();
-		this.name = name;
-		this.description = description;
-	}
-
-	public Item addItem(String name) {
-		final Item item = new Item(this, name);
-		item.create();
-		items.add(item);
-		this.save();
-		return item;
-	}
-
+    public Community(String name, String description) {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("Community name cannot be null nor empty");
+        this.name = name;
+        this.description = description;
+        this.users = new ArrayList<User>();
+        create();
+    }
 }

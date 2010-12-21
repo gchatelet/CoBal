@@ -4,19 +4,26 @@
 Community(rd):
     name: R&D
 
-Item(coca):
-    name: coca
-    community: rd
-
 User(bob):
     email: bob@gmail.com
     password: dummy
     name: bob
     isAdmin: false;
+
+Currency(eur):
+    name: €
     
 Donation(donation1):
     date: 2007-08-06
-    price: 6.5
-    unitCount: 6
-    item: coca
-    fromUser: bob
+    cost: 6.5
+    units: 6
+    name: "coca cola"
+    community: rd
+    donator: bob
+
+Debt(debt1):
+    date: 2007-08-06
+    cost: 6.5
+    units: 2
+    debtor: bob
+    purpose: donation1

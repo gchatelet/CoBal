@@ -1,5 +1,6 @@
+import models.Community;
+import models.Currency;
 import models.Donation;
-import models.Item;
 import models.User;
 
 import org.junit.Before;
@@ -14,15 +15,19 @@ public abstract class AbstractUnitTest extends UnitTest {
         Fixtures.load("data.yml");
     }
 
-    protected static Item getCoca() {
-        return Item.find("byName", "coca").first();
-    }
-
     protected static User getBob() {
         return User.find("byName", "bob").first();
     }
 
-    protected static Donation getDonation() {
-        return Donation.<Donation> findAll().get(0);
+    protected static Community getRnD() {
+        return Community.find("byName", "R&D").first();
+    }
+
+    protected static Currency getEuro() {
+        return Currency.findCurrency("€");
+    }
+
+    protected static Donation getCocaDonation() {
+        return Donation.find("byName", "coca cola").<Donation> first();
     }
 }

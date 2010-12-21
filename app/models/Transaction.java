@@ -8,7 +8,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import play.data.validation.Min;
-import play.data.validation.Range;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
@@ -19,20 +18,26 @@ public abstract class Transaction extends Model {
     public Date date;
     @Required
     @Min(value = 0)
-    public BigDecimal price;
+    public BigDecimal cost;
     @Required
     @Min(value = 0)
-    public int unitCount;
+    public int units;
 
-    public Transaction(BigDecimal price, int unitCount) {
+    public Transaction(BigDecimal cost, int units) {
         this.date = new Date();
-        if (!validPrice(price) || unitCount < 0)
-            throw new IllegalArgumentException("Invalid transaction with price : " + price + ", and item count : " + unitCount);
-        this.price = price;
-        this.unitCount = unitCount;
+        this.cost = checkCost(cost);
+        this.units = checkUnits(units);
     }
 
-    public static boolean validPrice(BigDecimal value) {
-        return value != null && BigDecimal.ZERO.compareTo(value) <= 0;
+    private int checkUnits(int unitCount) {
+        if (unitCount < 0)
+            throw new IllegalArgumentException("units must be >= 0");
+        return unitCount;
+    }
+
+    private BigDecimal checkCost(BigDecimal value) {
+        if (value == null || BigDecimal.ZERO.compareTo(value) > 0)
+            throw new IllegalArgumentException("cost must be >= 0");
+        return value;
     }
 }
