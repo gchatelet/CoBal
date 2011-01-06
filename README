@@ -1,0 +1,19 @@
+CoBal stands for Collaborative Balance
+======================================
+
+It's a web application now based on Play! framework to manage who gave
+and who took from a community. It's intended to be accessible from
+cell phones as well as computers. It helps you know who owes what to who.
+
+It's under early development for the moment though.
+
+Getting started
+---------------
+
+Download play framework : http://www.playframework.org and unzip.
+
+Go to the directory containing this file and launch tests by typing
+> play test
+
+Now open a browser to http://localhost:9000/@tests , select all
+unit tests and push the start button. Everything should be green : )
