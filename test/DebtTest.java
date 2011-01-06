@@ -13,12 +13,14 @@ public class DebtTest extends AbstractUnitTest {
         assertNotNull(donation.date);
         assertNotNull(donation.donator);
         assertNotNull(donation.cost);
-        assertEquals(6, donation.units);
+        assertEquals(5, donation.units);
     }
 
     @Test
     public void goodUnitDebt() {
-        new Debt(getBob(), getCocaDonation(), 1);
+        final Donation donation = new Donation("name", getRnD(), getBob(), getEuro(), BigDecimal.TEN, 1);
+        new Debt(getBob(), donation, 1);
+        assertEquals(1, donation.borrowings.size());
     }
 
     @Test
@@ -33,7 +35,7 @@ public class DebtTest extends AbstractUnitTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void debtBadPrice() {
+    public void debtIllegalPrice() {
         new Debt(getBob(), getCocaDonation(), new BigDecimal(-1));
     }
 

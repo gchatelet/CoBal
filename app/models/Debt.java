@@ -18,6 +18,8 @@ public class Debt extends Transaction {
 
     public Debt(User debtor, Donation purpose, BigDecimal borrowing) {
         this(debtor, purpose, borrowing, 0);
+        if (borrowing == null)
+            throw new IllegalArgumentException("unable to borrow a null price");
         final String currency = purpose.currency.toString();
         if (purpose.isCountable())
             throw new IllegalArgumentException("unable to borrow " + borrowing + ' ' + currency + " on " + purpose.name
@@ -29,12 +31,14 @@ public class Debt extends Transaction {
     }
 
     public Debt(User debtor, Donation purpose, int units) {
-        this(debtor, purpose, BigDecimal.ZERO, units);
+        this(debtor, purpose, null, units);
         if (purpose.isCountable() && units == 0)
             throw new IllegalArgumentException(purpose.name + " is countable so you can't take 0 unit of it");
-        final int unitLeft = purpose.getUnitLeft();
-        if (units > unitLeft)
-            throw new IllegalStateException("asking for " + units + " units, but " + purpose.name + " has " + unitLeft + " units left");
+        if (purpose.isCountable()) {
+            final int unitLeft = purpose.getUnitLeft();
+            if (unitLeft < 0)
+                throw new IllegalStateException("asking for " + units + " units, but " + purpose.name + " has " + unitLeft + units + " units left");
+        }
     }
 
     private Debt(User debtor, Donation purpose, BigDecimal cost, int units) {
@@ -43,7 +47,7 @@ public class Debt extends Transaction {
             throw new IllegalArgumentException("debtor and purpose must not be null");
         this.purpose = purpose;
         this.debtor = debtor;
-        create();
+        purpose.borrowings.add(this);
     }
 
     public User getDonator() {

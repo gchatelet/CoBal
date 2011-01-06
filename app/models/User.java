@@ -35,7 +35,6 @@ public class User extends Model {
         this.lang = lang;
         this.donations = new ArrayList<Donation>();
         this.communities = new ArrayList<Community>();
-        create();
     }
 
     public void join(Community community) {
@@ -44,8 +43,7 @@ public class User extends Model {
         if (community == null)
             throw new IllegalArgumentException("Cannot join a null community");
         communities.add(community);
-        save();
-        community.refresh();
+        community.users.add(this);
     }
 
     public Community createAndJoin(String communityName, String description) {
@@ -72,5 +70,14 @@ public class User extends Model {
 
     public static User connect(String username, String password) {
         return User.find("byEmailAndPassword", username, password).first();
+    }
+
+    public static User find(String username) {
+        return User.find("byName", username).first();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " : " + name;
     }
 }

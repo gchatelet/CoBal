@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="views/**" kind="src" path="app"/>
-	<classpathentry kind="src" path="crud"/>
-	<classpathentry kind="src" path="secure"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="secure"/><classpathentry kind="src" path="crud"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/play.jar" sourcepath="/home/clitte/lib/play/framework"/>
+	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/play.jar" sourcepath="/home/clitte/lib/play/framework" />
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/jj-textile.jar"/>
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/cglib-2.2.jar"/>
@@ -55,5 +54,6 @@
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/hibernate-core-3.6.0.Final-patched.jar"/>
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/ezmorph-1.0.3.jar"/>
 	<classpathentry kind="lib" path="/home/clitte/lib/play/framework/lib/commons-codec-1.4.jar"/>
+	
 	<classpathentry kind="output" path="eclipse/classes"/>
 </classpath>

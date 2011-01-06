@@ -16,11 +16,23 @@ public abstract class AbstractUnitTest extends UnitTest {
     }
 
     protected static User getBob() {
-        return User.find("byName", "bob").first();
+        return User.find("bob");
+    }
+
+    protected static User getJohn() {
+        return User.find("john");
+    }
+
+    protected static User getAlice() {
+        return User.find("alice");
     }
 
     protected static Community getRnD() {
         return Community.find("byName", "R&D").first();
+    }
+
+    protected static Community getOtherCommunity() {
+        return Community.find("byName", "otherCommunity").first();
     }
 
     protected static Currency getEuro() {

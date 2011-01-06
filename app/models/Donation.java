@@ -16,6 +16,7 @@ public class Donation extends Transaction {
     @Required
     public String name;
     @Required
+    @ManyToOne
     public Community community;
     @Required
     @ManyToOne
@@ -36,7 +37,6 @@ public class Donation extends Transaction {
         this.donator = donator;
         this.currency = currency;
         this.borrowings = new ArrayList<Debt>();
-        create();
     }
 
     public boolean isCountable() {
@@ -44,14 +44,18 @@ public class Donation extends Transaction {
     }
 
     public boolean isFree() {
-        return BigDecimal.ZERO.equals(cost);
+        return cost == null || BigDecimal.ZERO.equals(cost);
+    }
+
+    public int getTakenUnit() {
+        int units = 0;
+        for (Debt borrowing : borrowings)
+            units += borrowing.units;
+        return units;
     }
 
     public int getUnitLeft() {
-        int unitLeft = units;
-        for (Debt borrowing : borrowings)
-            unitLeft -= borrowing.units;
-        return unitLeft;
+        return units - getTakenUnit();
     }
 
     public BigDecimal getMoneyLeft() {
@@ -59,5 +63,21 @@ public class Donation extends Transaction {
         for (Debt borrowing : borrowings)
             money.min(borrowing.cost);
         return money;
+    }
+
+    public BigDecimal getPartCost() {
+        if (isFree())
+            return BigDecimal.ZERO;
+        if (units != 0)
+            return cost.divide(BigDecimal.valueOf(units), CobalMathContext.MC);
+        final int takenUnit = getTakenUnit();
+        if (takenUnit == 0)
+            return cost;
+        return cost.divide(BigDecimal.valueOf(takenUnit), CobalMathContext.MC);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " : " + name;
     }
 }

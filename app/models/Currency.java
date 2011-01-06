@@ -14,7 +14,7 @@ public class Currency extends Model {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException();
         this.name = name;
-        create();
+        save();
     }
 
     public static Currency findCurrency(String byName) {

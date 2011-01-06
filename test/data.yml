@@ -3,11 +3,28 @@
 
 Community(rd):
     name: R&D
+    
+Community(otherCommunity):
+    name: otherCommunity
 
 User(bob):
     email: bob@gmail.com
     password: dummy
     name: bob
+    isAdmin: true;
+    communities: [rd]
+
+User(john):
+    email: john@gmail.com
+    password: dummy
+    name: john
+    isAdmin: false;
+    communities: [rd]
+
+User(alice):
+    email: alice@gmail.com
+    password: dummy
+    name: alice
     isAdmin: false;
 
 Currency(eur):
@@ -15,15 +32,14 @@ Currency(eur):
     
 Donation(donation1):
     date: 2007-08-06
-    cost: 6.5
-    units: 6
+    cost: 10
+    units: 5
     name: "coca cola"
     community: rd
     donator: bob
 
 Debt(debt1):
     date: 2007-08-06
-    cost: 6.5
     units: 2
-    debtor: bob
+    debtor: john
     purpose: donation1

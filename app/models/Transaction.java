@@ -16,7 +16,6 @@ import play.db.jpa.Model;
 public abstract class Transaction extends Model {
     @Required
     public Date date;
-    @Required
     @Min(value = 0)
     public BigDecimal cost;
     @Required
@@ -36,7 +35,7 @@ public abstract class Transaction extends Model {
     }
 
     private BigDecimal checkCost(BigDecimal value) {
-        if (value == null || BigDecimal.ZERO.compareTo(value) > 0)
+        if (value != null && BigDecimal.ZERO.compareTo(value) > 0)
             throw new IllegalArgumentException("cost must be >= 0");
         return value;
     }

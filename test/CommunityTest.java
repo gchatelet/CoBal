@@ -11,17 +11,23 @@ public class CommunityTest extends AbstractUnitTest {
 
     @Test
     public void joinCommunity() {
-        getBob().join(getRnD());
-        assertEquals(1, getBob().communities.size());
-        assertEquals(1, getRnD().users.size());
+        getBob().join(getOtherCommunity());
+        assertEquals(2, getBob().communities.size());
+        assertTrue(getBob().communities.contains(getRnD()));
+        assertTrue(getBob().communities.contains(getOtherCommunity()));
+        assertEquals(2, getRnD().users.size());
+        assertTrue(getRnD().users.contains(getBob()));
+        assertTrue(getRnD().users.contains(getJohn()));
+        assertEquals(1, getOtherCommunity().users.size());
+        assertTrue(getOtherCommunity().users.contains(getBob()));
     }
 
     @Test
     public void joinCommunityTwice() {
-        getBob().join(getRnD());
-        getBob().join(getRnD());
-        assertEquals(1, getBob().communities.size());
-        assertEquals(1, getRnD().users.size());
+        getBob().join(getOtherCommunity());
+        getBob().join(getOtherCommunity());
+        assertEquals(2, getBob().communities.size());
+        assertEquals(2, getRnD().users.size());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 
+import models.Debt;
 import models.Donation;
 import models.User;
 
@@ -55,7 +56,12 @@ public class DonationTest extends AbstractUnitTest {
 
     @Test
     public void donateForFreeIsOk() {
-        new Donation("coca cola", getRnD(), getBob(), getEuro(), BigDecimal.ZERO, 1);
+        assertTrue(new Donation("coca cola", getRnD(), getBob(), getEuro(), BigDecimal.ZERO, 1).isFree());
+    }
+
+    @Test
+    public void donateNullMeansFreeAndIsOk() {
+        assertTrue(new Donation("coca cola", getRnD(), getBob(), getEuro(), null, 1).isFree());
     }
 
     @Test
@@ -74,5 +80,32 @@ public class DonationTest extends AbstractUnitTest {
         assertEquals(getEuro(), donation.currency);
         assertEquals(BigDecimal.ONE, donation.cost);
         assertEquals(0, donation.units);
+    }
+
+    @Test
+    public void partCostForFreeDonation() {
+        final Donation donation = new Donation("test", getRnD(), getBob(), getEuro(), null, 0);
+        assertEquals(BigDecimal.ZERO, donation.getPartCost());
+    }
+
+    @Test
+    public void partCost() {
+        final Donation donation = new Donation("test", getRnD(), getBob(), getEuro(), BigDecimal.TEN, 10);
+        assertEquals(BigDecimal.ONE, donation.getPartCost());
+    }
+
+    @Test
+    public void partWithOneDebtNoUnit() {
+        final Donation donation = new Donation("test", getRnD(), getBob(), getEuro(), BigDecimal.TEN, 0);
+        new Debt(getBob(), donation, 1);
+        assertEquals(BigDecimal.TEN, donation.getPartCost());
+    }
+
+    @Test
+    public void partWithTwoDebtsNoUnit() {
+        final Donation donation = new Donation("test", getRnD(), getBob(), getEuro(), BigDecimal.TEN, 0);
+        new Debt(getBob(), donation, 2);
+        assertEquals(2, donation.getTakenUnit());
+        assertEquals(BigDecimal.valueOf(5), donation.getPartCost());
     }
 }
